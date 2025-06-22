@@ -1,0 +1,57 @@
+body
+      {
+        padding: 30px;
+        margin: auto;
+        max-width: 500px;
+        font-size: larger;
+        font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+      }
+
+      ul, ol
+      {
+        padding-left: inherit;
+      }
+
+      .j
+      {
+        text-align: justify;
+      }
+      
+      .ww
+      {
+        font-style: italic;
+      }
+
+      .title
+      {
+        font-weight: bold;
+      }
+
+      h1
+      {
+        margin-bottom: 0;
+      }
+      
+      a
+      {
+        color: rgb(9, 132, 221);
+        text-decoration: inherit;
+      }
+
+      a:hover
+      {
+        text-decoration: underline;
+      }
+
+
+      #mail
+      {
+        margin-top: 5px;
+        font-family: monospace;
+        font-size: small;
+      }
+
+      #publications li a
+      {
+        font-style: italic;
+      }

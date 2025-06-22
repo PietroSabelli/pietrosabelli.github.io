@@ -1,60 +1,10 @@
+<!DOCTYPE html>
 <html>
   <head>
     <title>Pietro Sabelli</title>
-    <style>
-      body
-      {
-        padding: 30px;
-        margin: auto;
-        width: 500px;
-        font-size: larger;
-        font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-      }
-
-      .j
-      {
-        text-align: justify;
-      }
-      
-      .ww
-      {
-        font-style: italic;
-      }
-
-      .title
-      {
-        font-weight: bold;
-      }
-
-      h1
-      {
-        margin-bottom: 0;
-      }
-      
-      a
-      {
-        color: rgb(9, 132, 221);
-        text-decoration: inherit;
-      }
-
-      a:hover
-      {
-        text-decoration: underline;
-      }
-
-
-      #mail
-      {
-        margin-top: 5px;
-        font-family: monospace;
-        font-size: medium;
-      }
-
-      #publications li a
-      {
-        font-style: italic;
-      }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" media="only screen and (max-width: 920px)" href="phone.css" />
   </head>
   <body>
     <h1>Pietro Sabelli</h1>
@@ -62,7 +12,7 @@
     <p id="mail">
     <a href="mailto:sabelli@flu.cas.cz">sabelli@flu.cas.cz</a> |
     <a href="https://github.com/PietroSabelli">GitHub</a> |
-    <a href="sabelli_CV.pdf">Curriculum Vitae</a>
+    <a href="sabelli_CV.pdf">CV</a>
     </p>
     
     <p class="j">
@@ -83,36 +33,33 @@
       and <a href="https://sites.google.com/view/samuelemaschio">Samuele Maschio</a>.
     </p>
     <h2>Publications</h2>
-    <ul id="publications">
-      <li>
-      <a href="https://www.sciencedirect.com/science/article/pii/S0168007224001283">Equiconsistency of the Minimalist Foundation with its classical version.</a>
-      With M. E. Maietti.
-      Annals of Pure and Applied Logic,
-      Volume 176, Issue 2.
-      2025 
-      </li>
+    <ol id="publications">
       <li>
       <a href="https://arxiv.org/abs/2404.03494">
         A topological reading of coinductive predicates in Dependent Type Theory.
       </a>
-      Submitted.
-      2024.
+      Mathematical Structures in Computer Science. To appear.
       (<a style="font-style: normal;" href="topological-co-induction-agda-html/index.html">Agda code</a>)
+      </li>
+      <li>
+      <a href="https://www.sciencedirect.com/science/article/pii/S0168007224001283">Equiconsistency of the Minimalist Foundation with its classical version.</a>
+      With M. E. Maietti.
+      Annals of Pure and Applied Logic,
+      Volume 176, Issue 2,
+      2025 
       </li>
       <li>
       <a href="http://doi.org/10.46298/entics.11755">A topological counterpart of well-founded trees in dependent type theory.</a>
       With M. E. Maietti.
-      Electronic Notes in Theoretical Informatics and Computer Science, Volume 3. Proceedings of MFPS XXXIX.
-      2022.
+      Electronic Notes in Theoretical Informatics and Computer Science, Volume 3, 2022. Proceedings of MFPS XXXIX.
       (<a style="font-style: normal;" href="topological-co-induction-agda-html/index.html">Agda code</a>)
       </li>
       <li>
       <a href="http://doi.org/10.1007/978-3-031-08740-0_15">On the Compatibility Between the Minimalist Foundation and Constructive Set Theory.</a>
       With S. Maschio.
       Revolutions and Revelations in Computability. CiE 2022. Lecture Notes in Computer Science, vol 13359. Springer, Cham.
-      2021
     </li>
-    </ul>
+    </ol>
     <h2>Selected Talks</h2>
     <ul>
       <li>
