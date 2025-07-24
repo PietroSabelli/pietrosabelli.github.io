@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>The Editor</title>
+    <!--
+      Commands:
+      WAD to move
+      S to edit
+      E to compile
+
+      Description:
+      The Editor is a sandbox platformer where the game world consists of the game's own source code.
+      In this sense, it is a Quine – see https://en.wikipedia.org/wiki/Quine_(computing).
+      The player has the ability to modify the world and to reflect the changes in the code.
+    -->
+    <link rel="icon" type="image/x-icon" href="favicon.png">
+  </head>
+  <body>
+    <style>
+      body { 
+        cursor: none;
+        overflow: hidden;
+      }
+
+      canvas
+      {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        cursor: none;
+      }
+
+      #input
+      {
+        position: fixed;
+        top: -100px;
+        left: -100px;
+      }
+
+      #map
+      {
+        z-index: 1;
+      }
+
+      #player
+      {
+        z-index: 2;
+      }
+    </style>
+    <canvas id="map"></canvas>
+    <canvas id="player"></canvas>
+    <input id="input" disabled>
+    <script>
+    //A cheating Quine
+    const QUINE = '<html>\n' + document.documentElement.innerHTML + '\n</html>'
+    
+    const TILE_WIDTH = 10
+    const TILE_HEIGHT = 18
+    
+    const MAP_WIDTH = QUINE.split('\n').reduce(function (a, b) {
+      return a.length > b.length ? a : b;
+      }).length + 2
+    const MAP_HEIGHT = QUINE.split('\n').length + 1
+
+    const PLAYER_WIDTH = TILE_WIDTH-3
+    const PLAYER_HEIGHT = TILE_HEIGHT-1
+
+    const CAMERA_MARGIN = 200
+
+    const GRAVITY = 0.5
+    const MAX_VERTICAL_SPEED = TILE_HEIGHT
+    const SPEED = 2
+    const JUMP = 10
+
+    var position = { x: 240, y: 100 }
+    var velocity = { x: 0, y: 0 }
+    var timeOnGround = 0
+
+    const keys = {
+      w: { pressed: false },
+      a: { pressed: false },
+      d: { pressed: false }
+    }
+
+    var editorMode = false
+    var editableTile = { x: 0, y: 0 }
+
+    const input = document.getElementById("input")
+
+    const canvasMap = document.getElementById("map")
+    const ctxMap = canvasMap.getContext('2d')
+
+    const canvasPlayer = document.getElementById("player")
+    const ctxPlayer = canvasPlayer.getContext('2d')
+
+    var gameMap = new Array(MAP_WIDTH)
+
+    for (var x = 0; x < MAP_WIDTH; x++)
+      gameMap[x] = new Array(MAP_HEIGHT).fill(0)
+    
+    var i = 0
+    for (var y = 0; y < MAP_HEIGHT; y++)
+    {
+      for (var x = 1; x < MAP_WIDTH; x++)
+      {
+        var code = QUINE.charCodeAt(i)
+        i++
+
+        if (isNaN(code)) code = 0
+        
+        if (code == 10)
+        {
+          gameMap[MAP_WIDTH-1][y] = 10
+          break
+        }
+        else
+          gameMap[x][y] = code
+      }
+    }
+
+    updateDimension()
+    updateMap()
+    runPlayer()
+
+    //Check collision with solid tiles
+    function collision(x,y)
+    {
+      return (
+        
+        //Check if the coordinates are in bounds
+        x >= 0 && x < MAP_WIDTH && y >= 0 && y < MAP_HEIGHT &&
+        
+        // Check if the character is not null, a space, or a line break
+        gameMap[x][y] != 0 && gameMap[x][y] != 10 && gameMap[x][y] != 32 &&
+        
+        // Actual collision check
+        position.y + PLAYER_HEIGHT >= y*TILE_HEIGHT &&
+        position.y <= y*TILE_HEIGHT + TILE_HEIGHT &&
+        position.x <= x*TILE_WIDTH + TILE_WIDTH &&
+        position.x + PLAYER_WIDTH >= x*TILE_WIDTH
+      )
+    }
+
+    function updateDimension()
+    {
+      canvasMap.width = Math.max(window.innerWidth, MAP_WIDTH*TILE_WIDTH)
+      canvasMap.height = TILE_HEIGHT * MAP_HEIGHT
+
+      canvasPlayer.width = Math.max(window.innerWidth, MAP_WIDTH*TILE_WIDTH)
+      canvasPlayer.height = TILE_HEIGHT * MAP_HEIGHT
+    }
+
+    function updateMap()
+    {
+      ctxMap.clearRect(0, 0, canvasMap.width, canvasMap.height)
+
+      for (var x = 0; x < MAP_WIDTH; x++) {
+        for (var y = 0; y < MAP_HEIGHT; y++) {
+          ctxMap.fillStyle = '#000'
+          ctxMap.font = TILE_HEIGHT + "px monospace"
+          ctxMap.fillText(String.fromCharCode(gameMap[x][y]), x*TILE_WIDTH, (y+1)*TILE_HEIGHT)
+        }
+      }
+    }
+
+    function runPlayer() {
+      window.requestAnimationFrame(runPlayer)
+
+      ctxPlayer.clearRect(0, 0, canvasMap.width, canvasMap.height)
+
+      const closestTile = {
+        x: Math.round(position.x/TILE_WIDTH),
+        y: Math.round(position.y/TILE_HEIGHT)
+      }
+
+      editableTile.x = closestTile.x
+      editableTile.y = closestTile.y + 1
+
+      if (editorMode)
+      {
+        //draw editable tile
+        ctxPlayer.fillStyle = 'rgba(0,0,0,0.5)'
+        ctxPlayer.fillRect(editableTile.x*TILE_WIDTH, editableTile.y*TILE_HEIGHT, TILE_WIDTH, TILE_HEIGHT)
+      }
+      else {
+        //Update time on ground
+        velocity.y == 0 ? timeOnGround++ : timeOnGround = 0
+
+        //Update horizontal velocity and position
+        velocity.x = 0
+        
+        if (keys.d.pressed)
+          velocity.x = SPEED
+        else if (keys.a.pressed)
+          velocity.x = -SPEED
+
+        position.x += velocity.x
+
+        //Apply horizontal collision
+        for (var x = -2; x <= 2; x++) {
+        for (var y = -2; y <= 2; y++) {
+          
+          const collisionTile = {
+            x: closestTile.x + x,
+            y: closestTile.y + y
+          }
+
+          if (collision(collisionTile.x,collisionTile.y)) {
+            if (velocity.x > 0) {
+              velocity.x = 0
+              position.x = collisionTile.x * TILE_WIDTH - PLAYER_WIDTH - 0.1
+              break
+            } else if (velocity.x < 0) {
+              velocity.x = 0
+              position.x = collisionTile.x * TILE_WIDTH + TILE_WIDTH + 0.1
+              break
+            }
+          }
+        }
+        }
+
+        if (position.x < 0)
+        {
+          velocity.x = 0
+          position.x = 0
+        }
+        else if (position.x > canvasMap.width - PLAYER_WIDTH - 1)
+        {
+          velocity.x = 0
+          position.x = canvasMap.width - PLAYER_WIDTH - 1
+        }
+
+        //Update vertical velocity and position
+        if (velocity.y + GRAVITY < MAX_VERTICAL_SPEED)
+          velocity.y += GRAVITY
+        else
+          velocity.y = MAX_VERTICAL_SPEED
+        
+        position.y += velocity.y
+
+        //Apply vertical collision
+        for (var x = -2; x <= 2; x++) {
+        for (var y = -2; y <= 2; y++) {
+          
+          const collisionTile = {
+            x: closestTile.x + x,
+            y: closestTile.y + y
+          }
+
+          if (collision(collisionTile.x,collisionTile.y)) {
+            if (velocity.y > 0) {
+              velocity.y = 0
+              position.y = collisionTile.y * TILE_HEIGHT - PLAYER_HEIGHT - 0.01
+              break
+            } else if (velocity.y < 0) {
+              velocity.y = 0
+              position.y = collisionTile.y*TILE_HEIGHT + TILE_HEIGHT + 0.01
+              break
+            }
+          }
+        }
+        }
+
+        if (position.y < 0)
+        {
+          velocity.y = 0
+          position.y = 0
+        }
+        else if (position.y >= MAP_HEIGHT * TILE_HEIGHT - PLAYER_HEIGHT)
+        {
+          velocity.y = 0
+          position.y = MAP_HEIGHT * TILE_HEIGHT - PLAYER_HEIGHT
+        }
+
+        //Draw player
+        ctxPlayer.fillStyle = 'rgb(146,146,146)'
+        ctxPlayer.fillRect(position.x+0.5, position.y+0.5, TILE_WIDTH, TILE_HEIGHT)
+
+        //Draw selected tile
+        if (timeOnGround > 1) {
+          ctxPlayer.strokeStyle = 'rgb(146,146,146)'
+          ctxPlayer.strokeRect(editableTile.x*TILE_WIDTH, editableTile.y*TILE_HEIGHT, TILE_WIDTH, TILE_HEIGHT)
+        }
+
+        //Move camera
+        const camera_top = position.y - CAMERA_MARGIN
+        const camera_bottom = position.y + PLAYER_HEIGHT - window.innerHeight + CAMERA_MARGIN
+        const camera_left = position.x - CAMERA_MARGIN
+        const camera_right = position.x + PLAYER_WIDTH - window.innerWidth + CAMERA_MARGIN
+
+        if (window.scrollY > camera_top)
+        {
+          window.scroll(window.scrollX, camera_top)
+        } else if (window.scrollY < camera_bottom)
+        {
+          window.scroll(window.scrollX, camera_bottom)
+        }
+        
+        if (window.scrollX > camera_left)
+        {
+          window.scroll(camera_left, window.scrollY)
+        } else if (window.scrollX < camera_right)
+        {
+          window.scroll(camera_right, window.scrollY)
+        }
+      }
+    }
+
+    window.addEventListener('wheelEvent', (event) => {
+      event.preventDefault()
+    })
+
+    window.addEventListener('resize', (event) => {
+      updateDimension()
+      updateMap()
+    })
+
+    window.addEventListener('keydown', (event) => {
+      if (!editorMode)
+      {
+        switch (event.key) {
+          case 'd':
+            keys.d.pressed = true
+            break
+          case 'a':
+            keys.a.pressed = true
+            break
+          case 'w':
+            if (!editorMode && velocity.y == 0 && !keys.w.pressed) velocity.y = -JUMP
+            keys.w.pressed = true
+            break
+          case 's':
+            if (velocity.x == 0 && velocity.y == 0)
+            {
+              input.disabled = false
+              input.focus()
+              editorMode = true
+            }
+            break
+          case 'e':
+            var v = ""
+
+            for (var y = 0; y < MAP_HEIGHT; y++) {
+              for (var x = 0; x < MAP_WIDTH; x++) {
+                if (gameMap[x][y] != 0)
+                  v += String.fromCharCode(gameMap[x][y])
+              }
+            }
+            
+            window.open('').document.write(v)
+            break
+        }
+      }
+    })
+
+    window.addEventListener('keyup', (event) => {
+      if (editorMode && input.value.length == 2)
+      {
+        gameMap[editableTile.x][editableTile.y] = input.value.charCodeAt(1)
+        updateMap()
+        input.value = ""
+        input.disabled = true
+        editorMode = false 
+      } else {
+        switch (event.key) {
+          case 'd':
+            keys.d.pressed = false
+            break
+          case 'a':
+            keys.a.pressed = false
+            break
+          case 'w':
+            keys.w.pressed = false
+            break
+        }
+      }
+    })
+    </script>
+  </body>  
+</html>         
