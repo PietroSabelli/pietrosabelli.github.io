@@ -51,7 +51,7 @@ body
      
       }
 
-      #publications li a
+      .publications li a
       {
         font-style: italic;
       }
