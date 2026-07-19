@@ -1,0 +1,318 @@
+@import url('https://fonts.googleapis.com/css2?family=Marcellus+SC&display=swap');
+
+*
+{
+  z-index: 0;
+}
+
+html
+{
+/*  scroll-behavior:smooth*/
+}
+
+body
+{
+  font-family: Arial, Helvetica, sans-serif;
+  padding: 0;
+  margin: 0;
+  padding-bottom: 40px;
+}
+
+a
+{
+  color: #0040C0;
+  text-decoration: inherit;
+}
+
+a:hover
+{
+  text-decoration: underline;
+}
+
+#pmenu
+{
+  display: none;
+  z-index: 2;
+}
+
+#menu
+{
+  z-index: 2;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  position: fixed;
+  top: 0px;
+  padding-top: 25px;
+  padding-bottom: 15px;
+  text-align: center;
+
+  color: black;
+}
+
+#menu a
+{
+  color: inherit;
+}
+
+#menu li
+{
+  display: inline;
+  margin-right: 10px;
+  margin-left: 10px;
+  margin-bottom: 20px;
+}
+
+#menu li a
+{
+  font-family:Arial, Helvetica, sans-serif;
+  font-weight: 400;
+
+  padding: 3px 10px;
+
+  background: rgb(208, 208, 208);
+  border-radius: 20px;
+}
+
+/*#menu li:first-child a
+{
+  font-family: 'Marcellus SC', serif;
+  font-weight: bold;
+}
+
+#pmenu li:first-child a
+{
+  font-family: 'Marcellus SC', serif;
+  font-weight: bold;
+}*/
+
+#menu li a:hover
+{
+  background: #EEE;
+  cursor: pointer;
+}
+
+#menu li a:hover
+{
+  text-decoration: none;
+}
+
+#presentation
+{
+  background-image: url("signori.jpg"), linear-gradient(#333, #000);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  display: block;
+  height: 100vh;
+}
+
+.title
+{
+  color: white;
+  text-align: center;
+  padding-top: 20vh;
+}
+
+.title h1
+{
+  font-family: 'Marcellus SC', serif;
+  font-size: 50px;
+  text-shadow: 0px 0px 5px #000;
+}
+
+.title h3
+{
+  font-weight: normal;
+  font-size: 25px;
+  margin: 0;
+  margin-bottom: 5px;
+  padding: 0;
+}
+
+.title h4
+{
+  font-size: 20px;
+  font-weight: normal;
+}
+
+#didascalia
+{
+  position: relative;
+  width: 90%;
+  margin: auto;
+  top: 90%;
+  text-align: right;
+  z-index: 0 !important;
+}
+
+#didascalia p
+{
+  display: inline;
+  padding: 3px 10px;
+  font-size: 20px;
+  font-style: italic;
+  color: #FFF;
+}
+
+#law
+{
+  
+  margin: 10px 0px;
+}
+
+#presentation
+{
+  /* border-bottom: 1px solid #555;*/
+}
+
+#shadow
+{
+  background: linear-gradient(#999, #FFF);
+  width: 100%;
+  height: 0px;
+}
+
+#portrait
+{
+  display:block;
+  margin: auto;
+  width: 250px;
+  border-radius: 5px;
+}
+
+.section
+{
+  margin: auto;
+  padding-left: 20px;
+  padding-right: 20px;
+  margin-top: 50px;
+  max-width: 700px;
+}
+
+.section h1
+{
+  font-family: 'Marcellus SC', serif;
+  font-size: 40px;
+  margin-bottom: 10px;
+}
+
+.section h2
+{
+  font-family: 'Marcellus SC', serif;
+  font-size: 30px;
+  margin-bottom: 10px;
+}
+
+.section p, ul
+{
+  margin-top: 10px;
+  font-size: 18px;
+  line-height: 25px;
+  text-align: justify;
+}
+
+.section img
+{
+  display: block;
+  margin: auto;
+  width: 100%;
+  max-width: 500px;
+  border-radius: 5px;
+}
+
+.chair
+{
+  
+  color: #777;
+}
+
+.section .nolist
+{
+  padding-left: 0;
+}
+
+.section .nolist li
+{
+  list-style-type: none;
+}
+
+.section h3
+{
+  margin-bottom: 0;
+  font-size: 25px;
+  font-weight: normal;
+}
+
+.break
+{
+  color: #26831a;
+}
+
+.talk
+{
+ font-style: italic;
+}
+
+.blacklist
+{
+  padding-left: 20px;
+}
+
+#prog li
+{
+  margin-bottom: 15px;
+  line-height: 25px;
+  text-align: left;
+}
+
+.clock
+{
+  font-weight: bold;
+  
+}
+
+#com
+{
+  margin: auto;
+  margin-top: 40px;
+  padding: 0px 40px;
+  width: fit-content;
+}
+
+#com h4
+{
+  margin: 0;
+  color: #777;
+  margin-bottom: 8px;
+  font-size: 17px;
+}
+
+#com ul
+{
+  margin: 0;
+  margin-bottom: 30px;
+  padding: 0;
+  list-style-type: none;
+}
+
+#com li
+{
+  font-size: 15px;
+  margin: 0px;
+  font-family: "Helvetica Neue";
+  text-align: left;
+}
+
+#logo
+{
+  text-align: center;
+}
+
+#logo img
+{
+  height: 70px;
+  margin: auto;
+  width: auto;
+  margin-top: 40px;
+}
